@@ -31,6 +31,29 @@ A browser opens `app.meetstream.ai`. Sign in (or create an account) and click **
 
 Ask OpenClaw to call the MeetStream tool `list_bots`. A list of bots, or an empty list, means that MeetStream is connected.
 
+## From the terminal (meetstream CLI)
+
+OpenClaw can also run the `meetstream` CLI. Install it once:
+
+```bash
+npm install -g @meetstream/cli                  # or: npx -y @meetstream/cli <command>
+pipx install meetstream-cli                     # or: uvx --from meetstream-cli meetstream <command>
+brew install meetstream-ai/tap/meetstream
+```
+
+Binaries: <https://github.com/meetstream-ai/cli/releases>. Sign in with `meetstream login` (it opens your browser and stores a key), or set `MEETSTREAM_API_KEY`. Do not paste the key in the chat.
+
+OpenClaw calls the CLI as `meetstream <command> --json --no-input` and reads the JSON on stdout. Exit codes: 0 ok, 1 runtime or API error, 2 usage error or not signed in, 3 not ready yet, 4 transcript failed.
+
+```bash
+meetstream join <meeting-url> --json --no-input                 # track 1a: send a bot
+meetstream bots status <bot-id> --json --no-input
+meetstream transcript <bot-id> --wait --json --no-input
+meetstream recordings <bot-id> --json --no-input
+```
+
+Track 1b: `meetstream join <url> --live-transcript-webhook https://<public-url>/webhook` and `meetstream listen` (needs a public URL or tunnel today). Track 3a: `meetstream setup --mode hosted`, then `meetstream join <url> --agent-config <id>`. Track 3c: `meetstream setup --mode byok` (add your keys in the dashboard; setup never asks for keys).
+
 ## Use it
 
 - "Send a bot to <meeting link> and take notes."
@@ -44,10 +67,10 @@ A voice agent listens and talks in the call. After the recording bot, use these 
 
 | Track | What you do | Price per meeting hour |
 |---|---|---|
-| 2. Bridge server (your own stack, local) | The bot sends live meeting audio to your server (`live_audio_required.websocket_url`), and your server sends audio, chat and images back on the control socket (`socket_connection_url.websocket_url`). You run your own speech-to-text, LLM and text-to-speech; free local models work (for example faster-whisper or Parakeet, a model in Ollama, Piper or Kokoro; check each model's license before commercial use). On a laptop, use a local tunnel (ngrok, cloudflared). See [Bridge server architecture](https://docs.meetstream.ai/guides/websockets/bridge-server-architecture) and the [MeetStream Bridge](https://github.com/meetstream-ai/meetstream-agent) starter. | Bot price only. No agent infrastructure, no model tokens. |
+| 2. Bridge server (your own stack, local) | The bot sends live meeting audio to your server (`live_audio_required.websocket_url`), and your server sends audio, chat and images back on the control socket (`socket_connection_url.websocket_url`). You run your own speech-to-text, LLM and text-to-speech; free local models work (for example faster-whisper or Parakeet, a model in Ollama, Piper or Kokoro; check each model's license before commercial use). On a laptop, use a local tunnel (ngrok, cloudflared). With the CLI: `meetstream join <url> --live-audio-ws wss://<public-url>/audio --socket-ws wss://<public-url>/control`. See [Bridge server architecture](https://docs.meetstream.ai/guides/websockets/bridge-server-architecture) and the [MeetStream Bridge](https://github.com/meetstream-ai/meetstream-agent) starter. | Bot price only. No agent infrastructure, no model tokens. |
 | 3. Agents API infra (MIA, hosted by MeetStream) | MeetStream hosts the agent. 3a: MeetStream's own, default keys. Inbuilt keys work in pipeline mode only: Deepgram (speech-to-text) and OpenAI (LLM and voice). Realtime mode runs on OpenAI and needs your own OpenAI key. 3c: your own provider keys (OpenAI, Anthropic, Deepgram, ElevenLabs and others). | Bot price + $0.25 agent infrastructure + the per-hour price of the models you pick. The dashboard agent editor shows the rate before the bot runs. With 3c your provider bills you for model usage. |
 | 3b. Bring your own agent infra (LiveKit) | Coming soon. Not available yet. | |
-| 3d. Local agent: OpenClaw as the brain | Coming soon. Not available in production yet. OpenClaw on your computer will write what the voice agent says, through the [MeetStream Agent Kit](https://github.com/meetstream-ai/agent-kit) (a preview) and `model.provider: "local_agent"`. | |
+| 3d. Local agent: OpenClaw as the brain | Coming soon. Not available in production yet. OpenClaw on your computer will write what the voice agent says, through `meetstream setup` and `meetstream agent serve` over the MeetStream relay (no tunnel). | |
 
 The bot price is $0.35 per recording hour ($0.25 at volume): <https://meetstream.ai/pricing>. Want no infrastructure work? Use track 3a or 3c. Inbuilt keys are not on for every account yet. If the API answers "MeetStream-managed keys are not available for … Use your own key.", use your own keys (3c) and do not retry. A hosted agent bot (track 3) takes only `agent_config_id`; do not add the bridge sockets to it.
 
