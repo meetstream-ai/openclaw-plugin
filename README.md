@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **Moved to [meetstream-ai/meetstream-plugin](https://github.com/meetstream-ai/meetstream-plugin)**, one repository for every AI coding agent: Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity, OpenCode, Cline, Kiro, Hermes and OpenClaw. It holds the OpenClaw plugin (now `plugins/openclaw`). This repository is archived.
+
 # MeetStream for OpenClaw
 
 Use MeetStream meeting bots from [OpenClaw](https://github.com/openclaw/openclaw): send a bot to a Zoom, Google Meet or Microsoft Teams call, then get the recording, the transcript and the meeting data.
