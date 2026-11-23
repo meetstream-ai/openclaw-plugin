@@ -41,7 +41,7 @@ pipx install meetstream-cli                     # or: uvx --from meetstream-cli 
 brew install meetstream-ai/tap/meetstream
 ```
 
-Binaries: <https://github.com/meetstream-ai/cli/releases>. Sign in with `meetstream login` (it opens your browser and stores a key), or set `MEETSTREAM_API_KEY`. Do not paste the key in the chat.
+Binaries: <https://github.com/meetstream-ai/cli/releases>. Sign in with `meetstream login` (it opens your browser and stores a key), or set `MEETSTREAM_API_KEY`. Do not paste the key in the chat. Every CLI workflow (bots, transcripts, live webhooks, Zoom token URLs, signed-in bots, calendar, MIA setup) and its JSON output: run `meetstream skill`, or see the [CLI guide](https://docs.meetstream.ai/build-with-ai/meetstream-cli).
 
 OpenClaw calls the CLI as `meetstream <command> --json --no-input` and reads the JSON on stdout. Exit codes: 0 ok, 1 runtime or API error, 2 usage error or not signed in, 3 not ready yet, 4 transcript failed.
 
